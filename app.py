@@ -65,7 +65,15 @@ def send(userEmail):
     return 'message sent'
 
 
-db = SQL('sqlite:///bookshelf.db')
+db_path = 'bookshelf.db'
+
+# Check if the database file exists
+if os.path.exists(db_path):
+    # Database exists, use the relative path
+    db = SQL('sqlite:///bookshelf.db')
+else:
+    # Database doesn't exist, use absolute path
+    db = SQL('sqlite:////home/taskotale/bookshelf/bookshelf.db')
 
 app.config['SESSION_PERMANENT'] = False
 app.config['SESSION_TYPE'] = 'filesystem'
