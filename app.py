@@ -16,7 +16,7 @@ from werkzeug.security import check_password_hash, generate_password_hash
 
 from flask_mail import Mail, Message
 from itsdangerous import URLSafeTimedSerializer
-# from dotenv import load_dotenv
+from dotenv import load_dotenv
 
 # using helper function for login required
 

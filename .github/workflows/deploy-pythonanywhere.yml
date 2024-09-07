@@ -1,8 +1,5 @@
 name: Deploy pythonanywhere webapp
-
-on:
-  push:
-
+on: [push]
 jobs:
   deploy:
     runs-on: ubuntu-latest
@@ -13,8 +10,10 @@ jobs:
       - name: Re-Deploy Pythonanywhere Django API
         uses: umuttopalak/pythonanywhere-deploy-action@v1.0.0
         with:
-          host: 'www.pythonanywhere.com'
-
-          MAIL_PASSWORD: { { secrets.MAIL_PASSWORD } }
-          SECRET_KEY: { { secrets.SECRET_KEY } }
-          SECURITY_PASSWORD_SALT: { { secrets.SECURITY_PASSWORD_SALT } }
+          host: 'www.pythonanywhere.com' 
+          username: {{ secrets.USERNAME }}
+          api_token: {{ secrets.API_TOKEN }}
+          domain_name: {{ secrets.DOMAIN_NAME }}
+          console_id:  {{ secrets.CONSOLE_ID }}
+          virtual_env: {{ secrets.VIRTUAL_ENV }}
+          directory: {{ secrets.DIRECTORY }}
