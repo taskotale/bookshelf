@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+
+{% extends "layout.html" %} {% block title %} Index {% endblock %} {% block main
+%}
+<p>{{ message }}</p>
+
+{% if book %}
+<p>Title: {{book['title']}}</p>
+<p>Author: {% for key in book['author']%} {{key}} {%endfor%}</p>
+<p>Language: {{book['language']}}</p>
+<img class="rounded" src="data:image/jpg;base64,{{cover}}" style="max-height: 50vh"/>
+<form action="/add_book_confirm" method="post">
+	<label name="status">Did you read this book?</label>
+	<input type="checkbox" name="status" value="True" />
+	<h5>Where is this book going?</h5>
+	<div>
+		<p>Available shelves</p>
+		<select class="form-select" name="bookshelf_choice" required>
+			<option disabled>Select bookshelf</option>
+			<option value="None">Not on shelf</option>
+			{% for shelf in bookshelves%}
+			<option value="{{shelf['id']}}">{{shelf['description']}}</option>
+			{%endfor%}
+		</select>
+		<div>
+			<a href="javascript:window.history.back()" class="btn btn-secondary mt-2">Back</a>
+			<button class="btn btn-primary mt-2" name="confirm" value="first" type="submit">Confirm</button>
+		</div>
+	</div>
+</form>
+{%else%}
+<div>
+	<h3>{{ selected['description'] }}</h3>
+	<img
+		class="rounded img-fluid"
+		style="max-height: 50vh"
+		src="{{ selected['image'] }}"
+	/>
+	<form action="/add_book_confirm" method="post">
+		<ul class="text-start mt-2">
+			<li>
+				<label for="height">Up to {{selected['height']}}</label>
+				↑:
+				<input
+					name="height"
+					min="1"
+					max="{{selected['height']}}"
+					id="selected-max-height"
+					type="number"
+					required
+				/>
+				shelf from bottom
+			</li>
+			<li>
+				<label for="width" class="form-label">To {{selected['width']}}</label>
+				→:
+				<input
+					name="width"
+					min="1"
+					max="{{selected['width']}}"
+					id="selected-max-width"
+					type="number"
+					required
+				/>
+				shelf from left
+			</li>
+		</ul>
+		<a href="javascript:window.history.back()" class="btn btn-secondary mt-2"
+			>back</a
+		>
+		<button class="btn btn-primary mt-2" name="confirm" value="location" type="submit">confirm</button>
+	</form>
+</div>
+
+{%endif%} {% endblock %}

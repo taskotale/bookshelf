@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+
+{% extends "layout.html" %} {% block title %} Log In {% endblock %} {% block
+main %}
+<h2 class="mb-3">{{ message }}</h2>
+
+<form action="/login" method="post">
+	<div class="mb-3">
+		<input
+			autocomplete="off"
+			autofocus
+			class="form-control mx-auto w-auto"
+			id="username"
+			name="username"
+			placeholder="Username"
+			type="text"
+			value="TahirMujic"
+		/>
+	</div>
+	<div class="mb-3">
+		<input
+			class="form-control mx-auto w-auto"
+			id="password"
+			name="password"
+			placeholder="Password"
+			type="password"
+			value="069824008"
+		/>
+	</div>
+	<button class="btn btn-primary" type="submit">Log In</button>
+</form>
+<small>
+	<a href="{{'/forgot_password'}}">forgot my password</a>
+</small>
+{% endblock %}

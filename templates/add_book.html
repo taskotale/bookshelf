@@ -1,0 +1,136 @@
+<!DOCTYPE html>
+
+
+{% extends "layout.html" %} {% block title %} Add Book {% endblock %} {% block
+main %}
+
+<p>{{ message }}</p>
+<div class="d-flex flex-column d-sm-block" id="select-btn">
+	<button class="btn btn-outline-primary m-3" id="isbn">Add a book by ISBN</button>
+	<button class="btn btn-outline-primary m-3" id="manual">Manual input</button>
+	<button class="btn btn-outline-primary m-3" id="bc">Add a book with barcode picture</button>
+</div>
+<hr />
+<div id="select-isbn" class="hide" style="display: none">
+	<form action="/add_book" method="post">
+		<div class="input-group">
+			<input class="form-control" name="isbn" placeholder="Type ISBN" type="text" />
+			<button class="btn btn-primary" name="add" value="isbn" type="submit">Add</button>
+		</div>
+	</form>
+</div>
+<div id="select-manual" class="hide input-group mb-3" style="display: none">
+	<form action="/add_book" enctype="multipart/form-data" method="post">
+		<input class="form-control mb-3" name="title" placeholder="Book title" type="text" />
+		<input class="form-control mb-3" name="author" placeholder="Author" type="text" />
+		<div class="input-group mb-3">
+			<label class="input-group-text" for="inputGroupSelect03">Languages</label>
+			<select
+				class="form-select"
+				data-placeholder="Choose a Language..."
+				default="EN"
+				id="inputGroupSelect03"
+				name="language"
+			>
+				<option value="EN">English</option>
+				<option value="AF">Afrikaans</option>
+				<option value="SQ">Albanian</option>
+				<option value="AR">Arabic</option>
+				<option value="HY">Armenian</option>
+				<option value="EU">Basque</option>
+				<option value="BN">Bengali</option>
+				<option value="BG">Bulgarian</option>
+				<option value="CA">Catalan</option>
+				<option value="KM">Cambodian</option>
+				<option value="ZH">Chinese (Mandarin)</option>
+				<option value="HR">Croatian</option>
+				<option value="CS">Czech</option>
+				<option value="DA">Danish</option>
+				<option value="NL">Dutch</option>
+				<option value="ET">Estonian</option>
+				<option value="FJ">Fiji</option>
+				<option value="FI">Finnish</option>
+				<option value="FR">French</option>
+				<option value="KA">Georgian</option>
+				<option value="DE">German</option>
+				<option value="EL">Greek</option>
+				<option value="GU">Gujarati</option>
+				<option value="HE">Hebrew</option>
+				<option value="HI">Hindi</option>
+				<option value="HU">Hungarian</option>
+				<option value="IS">Icelandic</option>
+				<option value="ID">Indonesian</option>
+				<option value="GA">Irish</option>
+				<option value="IT">Italian</option>
+				<option value="JA">Japanese</option>
+				<option value="JW">Javanese</option>
+				<option value="KO">Korean</option>
+				<option value="LA">Latin</option>
+				<option value="LV">Latvian</option>
+				<option value="LT">Lithuanian</option>
+				<option value="ME">Montenegrin</option>
+				<option value="MK">Macedonian</option>
+				<option value="MS">Malay</option>
+				<option value="ML">Malayalam</option>
+				<option value="MT">Maltese</option>
+				<option value="MI">Maori</option>
+				<option value="MR">Marathi</option>
+				<option value="MN">Mongolian</option>
+				<option value="NE">Nepali</option>
+				<option value="NO">Norwegian</option>
+				<option value="FA">Persian</option>
+				<option value="PL">Polish</option>
+				<option value="PT">Portuguese</option>
+				<option value="PA">Punjabi</option>
+				<option value="QU">Quechua</option>
+				<option value="RO">Romanian</option>
+				<option value="RU">Russian</option>
+				<option value="SM">Samoan</option>
+				<option value="SR">Serbian</option>
+				<option value="SK">Slovak</option>
+				<option value="SL">Slovenian</option>
+				<option value="ES">Spanish</option>
+				<option value="SW">Swahili</option>
+				<option value="SV">Swedish</option>
+				<option value="TA">Tamil</option>
+				<option value="TT">Tatar</option>
+				<option value="TE">Telugu</option>
+				<option value="TH">Thai</option>
+				<option value="BO">Tibetan</option>
+				<option value="TO">Tonga</option>
+				<option value="TR">Turkish</option>
+				<option value="UK">Ukrainian</option>
+				<option value="UR">Urdu</option>
+				<option value="UZ">Uzbek</option>
+				<option value="VI">Vietnamese</option>
+				<option value="CY">Welsh</option>
+				<option value="XH">Xhosa</option>
+			</select>
+		</div>
+		<div class="input-group">
+			<input class="form-control" default="False" name="manual_image" type="file" />
+			<button class="btn btn-primary" name="add" value="manual" type="submit">Add</button>
+		</div>
+	</form>
+</div>
+<div id="select-bc" class="hide" style="display: none">
+	<h6>Make sure that the barcode is oriented horizontally</h6>
+	<form action="/add_book" enctype="multipart/form-data" method="post">
+		<div class="input-group">
+			<input class="form-control" default="False" name="barcode_img" type="file" />
+			<button class="btn btn-primary" name="add" value="bc-img" type="submit">Add</button>
+		</div>
+	</form>
+</div>
+<script>
+	btnS = document.querySelectorAll('#select-btn>button');
+	btnS.forEach((btn) => {
+		btn.addEventListener('click', (e) => {
+			hide = document.querySelectorAll('.hide');
+			hide.forEach((section) => (section.style.display = 'none'));
+			show = document.getElementById('select-' + e.target.id);
+			show.style.display = 'block';
+		});
+	});
+</script>
+{% endblock %}

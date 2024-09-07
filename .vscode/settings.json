@@ -1,0 +1,25 @@
+{
+	"[python]": {
+		"editor.defaultFormatter": "ms-python.autopep8"
+	},
+	"python.formatting.provider": "none",
+	"cSpell.words": [
+		"AUTOINCREMENT",
+		"Baru",
+		"fontawesome",
+		"Fonticons",
+		"frombytes",
+		"itsdangerous",
+		"jsonify",
+		"malo",
+		"momak",
+		"najljepsi",
+		"Nikola",
+		"pyheif",
+		"pytesseract",
+		"pyzbar",
+		"sjutra",
+		"tesseract",
+		"werkzeug"
+	]
+}

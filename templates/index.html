@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+
+
+{% extends "layout.html" %} {% block title %} Index {% endblock %} {% block main
+%}
+<h2>{{ message }}</h2>
+<p>Found {{ book_num }} book(s)</p>
+<div>
+	{% if books %}
+	<div class="row row-cols-1 row-cols-md-2 g-4 justify-content-center">
+		{% for book in books %}
+		<div class="col" style="max-width: 15rem">
+			{% if message != 'You don`t have this book but you check it out online'%}
+			<a
+				class="book-card"
+				href="{{url_for('book_details', id=book['id'], page=page_num)}}"
+			>
+				{%endif%}
+				<div class="card">
+					{% if message != 'You don`t have this book but you check it out online'
+					%}
+					<img
+						src="{{ book['image'] }}"
+						class="card-img-top rounded"
+						alt="..."
+					/>
+					{%else%}
+					<img
+					src="data:image/jpg;base64,{{book['cover']}}"
+					class="card-img-top rounded"
+					alt=""
+					/>
+					{%endif%}
+					<div class="card-body">
+						<h5 class="card-title">{{ book['title'] }}</h5>
+						<p class="card-text">{{ book['author'] }}</p>
+					
+					{% if message == 'You don`t have this book but you check it out online'%}
+						<a class="btn btn-outline-secondary" target="_blank" rel="noopener noreferrer" href="{{ book['link'] }}">Google</a>
+						<a class="btn btn-outline-secondary" target="_blank" rel="noopener noreferrer" href="https://www.amazon.com/s?k={{book['title']}}&i=stripbooks&crid=2MGDPOH75D0YP&sprefix=a%2Cstripbooks%2C109&ref=nb_sb_noss_2">Amazon</a>
+
+						<form action="/add_book_from_find" method="post">
+							<input name="title" value="{{book['title']}}" type="hidden">
+							<input name="author" value="{{book['author']}}" type="hidden">
+							<input name="language" value="{{book['language']}}" type="hidden">
+							<input name="cover" value="{{book['cover']}}" type="hidden">
+							<button class="btn btn-outline-primary mt-2" type="submit">Add to collection</button>
+						</form>
+					{%endif%}
+
+					</div>
+				</div>
+			</a>
+		</div>
+		{% endfor %}
+	</div>
+</div>
+{% if total != 0 %} {% if page_num == total %}
+<a href="javascript:window.history.back()" class="btn btn-secondary mt-2"
+	>Previous</a
+>
+{% elif page_num and page_num != 0 %}
+<a href="javascript:window.history.back()" class="btn btn-secondary mt-2"
+	>Previous</a
+>
+<a
+	id="next-btn"
+	href="{{url_for('index', page=page_num+1)}}"
+	class="btn btn-secondary mt-2"
+	>Next</a
+>
+{% else %}
+<a
+	id="next-btn"
+	href="{{url_for('index', page=page_num+1)}}"
+	class="btn btn-secondary mt-2"
+	>Next</a
+>
+{% endif %} {%endif%} {%endif%}
+<script>
+	const searchParams = new URLSearchParams(window.location.search);
+	let key = '';
+	for (let arg of searchParams.entries()) {
+		if (arg[0] != 'page') {
+			key = arg[0];
+		}
+	}
+	if (searchParams.has(key)) {
+		param = searchParams.get(key);
+		const next = document.getElementById('next-btn');
+		if (next) {
+			next.href += '&' + key + '=' + param;
+		}
+	}
+</script>
+{% block book_details %}{% endblock %} {% block edit_book %}{% endblock %} {%
+block script %}{% endblock %} {% endblock %}

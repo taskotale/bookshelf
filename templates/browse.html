@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+
+
+{% extends "layout.html" %} {% block title %} Browse {% endblock %} {% block
+main %}
+<h2>{{ message }}</h2>
+<div>
+	{% if bookshelves %}
+	<div class="row row-cols-1 row-cols-md-2 g-4 justify-content-center">
+		{% for shelf in bookshelves %}
+		<div class="col" style="max-width: 15rem; position: relative">
+			<a class="shelf" href="{{url_for('index', shelf_id=shelf['id'])}}">
+				<div class="card">
+					<img
+						src="{{ shelf['image'] }}"
+						class="card-img-top rounded"
+						alt="..."
+					/>
+					<div class="card-body">
+						<h5 class="card-title">{{ shelf['description'] }}</h5>
+					</div>
+				</div>
+			</a>
+			<form action="/browse" method="get">
+				<button
+					class="delete-btn btn btn-outline-danger btn-sm mx-2"
+					name="delete"
+					value="{{shelf['id']}}"
+					style="
+						position: absolute;
+						top: 3%;
+						right: 6%;
+						background-color: rgba(255, 255, 255, 0.715);
+					"
+				>
+					<svg
+						style="fill: red; scale: 1.3"
+						height="15"
+						width="15"
+						viewBox="0 0 448 512"
+						aria-labelledby="button-label"
+						focusable="false"
+					>
+						<title id="button-label">Delete</title>
+						<path d="M135.2 17.7C140.6 6.8 151.7 0 163.8 0H284.2c12.1 0 23.2 6.8 28.6 17.7L320 32h96c17.7 0 32 14.3 32 32s-14.3 32-32 32H32C14.3 96 0 81.7 0 64S14.3 32 32 32h96l7.2-14.3zM32 128H416V448c0 35.3-28.7 64-64 64H96c-35.3 0-64-28.7-64-64V128zm96 64c-8.8 0-16 7.2-16 16V432c0 8.8 7.2 16 16 16s16-7.2 16-16V208c0-8.8-7.2-16-16-16zm96 0c-8.8 0-16 7.2-16 16V432c0 8.8 7.2 16 16 16s16-7.2 16-16V208c0-8.8-7.2-16-16-16zm96 0c-8.8 0-16 7.2-16 16V432c0 8.8 7.2 16 16 16s16-7.2 16-16V208c0-8.8-7.2-16-16-16z"/>
+						<!--! Font Awesome Pro 6.4.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license (Commercial License) Copyright 2023 Fonticons, Inc. -->
+					</svg>
+				</button>
+			</form>
+		</div>
+		{% endfor %}
+	</div>
+</div>
+{%else%}
+<div>You have no bookshelves</div>
+{%endif%}
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+<script>
+	$('.delete-btn').click((e) => confirm('Are you sure?'));
+	// document
+	// 	.getElementById('delete-btn')
+	// 	.addEventListener('click', (e) => confirm('Are you sure?'));
+</script>
+
+{% block book_details %}{% endblock %} {% block edit_book %}{% endblock %} {%
+block script %}{% endblock %} {% endblock %}
