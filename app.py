@@ -34,7 +34,7 @@ app.config['MAIL_PASSWORD'] = os.environ['MAIL_PASSWORD']
 
 
 mail = Mail(app)
-
+## TEST CHANGE
 
 def generate_token(email):
     serializer = URLSafeTimedSerializer(app.config['SECRET_KEY'])
