@@ -1,0 +1,24 @@
+name : Run Python Script
+
+on: 
+  workflow_dispatch:
+
+env:
+  MAIL_PASSWORD: ${{secrets.MAIL_PASSWORD}}
+  SECRET_KEY: ${{secrets.SECRET_KEY}}
+  SECURITY_PASSWORD_SALT: ${{secrets.SECURITY_PASSWORD_SALT}}
+
+jobs: 
+  run-python:
+    runs-on: ubuntu-latest
+    steps: 
+      - name: Checkout Code
+        uses: actions/checkout@v3
+
+      - name: Setup Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: '3.10'
+
+
+  
