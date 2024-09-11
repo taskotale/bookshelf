@@ -22,7 +22,8 @@ from dotenv import load_dotenv
 
 app = Flask(__name__)
 
-app.config['SECRET_KEY'] = os.environ['SECRET_KEY']
+app.config['SECRET_KEY'] = os.getenv("SECRET_KEY")
+
 app.config['SECURITY_PASSWORD_SALT'] = os.environ['SECURITY_PASSWORD_SALT']
 # mail sending config
 app.config['MAIL_SERVER'] = 'live.smtp.mailtrap.io'

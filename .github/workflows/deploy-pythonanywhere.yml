@@ -14,9 +14,10 @@ jobs:
         uses: umuttopalak/pythonanywhere-deploy-action@v1.0.0
         with:
           host: 'www.pythonanywhere.com'
-          USERNAME: ${{ secrets.USERNAME }}
-          API_TOKEN: ${{ secrets.API_TOKEN }}
-          DOMAIN_NAME: ${{ secrets.DOMAIN_NAME }}
-          CONSOLE_ID:  ${{ secrets.CONSOLE_ID }}
-          VIRTUAL_ENV: ${{ secrets.VIRTUAL_ENV }}
-          DIRECTORY: ${{ secrets.DIRECTORY }}
+          username: ${{ secrets.USERNAME }}
+          api_token: ${{ secrets.API_TOKEN }}
+          domain_name: ${{ secrets.DOMAIN_NAME }}
+          console_id:  ${{ secrets.CONSOLE_ID }}
+          virtual_env: ${{ secrets.VIRTUAL_ENV }}
+          directory: ${{ secrets.DIRECTORY }}
+
