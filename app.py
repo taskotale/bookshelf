@@ -63,14 +63,14 @@ def send(userEmail):
 
     try:
         token = generate_token(userEmail)
+        test_token = token
     except Exception as e:
         message = e
-        return render_template('login.html', message=message)
-
+        return message + test_token
     reset_url = url_for('reset_password', token=token, _external=True)
     message.body = reset_url
     mail.send(message)
-    return 'message sent'
+    return 'We sent an email with the link to reset your password'
 
 
 db_path = 'bookshelf.db'
@@ -518,8 +518,7 @@ def changePassword():
         if existingUserEmail == []:
             return render_template('forgot_password.html', message='There is no user with this email in our database.\r\n Try registering a new account')
         else:
-            send(email)
-            return render_template('login.html', message='We sent you an email with the activation code')
+            return render_template('login.html', message=send(email))
     return render_template('forgot_password.html')
 
 
