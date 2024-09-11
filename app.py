@@ -66,7 +66,8 @@ def send(userEmail):
         test_token = token
     except Exception as e:
         message = e
-        return message + test_token
+        secret = app.config['SECRET_KEY']
+        return secret 
     reset_url = url_for('reset_password', token=token, _external=True)
     message.body = reset_url
     mail.send(message)
