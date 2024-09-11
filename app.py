@@ -35,7 +35,8 @@ app.config['MAIL_PASSWORD'] = os.getenv("MAIL_PASSWORD")
 
 
 mail = Mail(app)
-## TEST CHANGE
+# TEST CHANGE
+
 
 def generate_token(email):
     serializer = URLSafeTimedSerializer(app.config['SECRET_KEY'])
@@ -59,7 +60,12 @@ def send(userEmail):
         recipients=[userEmail],
         sender=('Tahir from BOOKSHELF app', 'noreply@mujic.me')
     )
-    token = generate_token(userEmail)
+
+    try:
+        token = generate_token(userEmail)
+    except Exception as e:
+        print(f"Error generating token: {e}")
+
     reset_url = url_for('reset_password', token=token, _external=True)
     message.body = reset_url
     mail.send(message)
