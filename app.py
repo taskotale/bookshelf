@@ -65,6 +65,7 @@ def send(userEmail):
         token = generate_token(userEmail)
     except Exception as e:
         print(f"Error generating token: {e}")
+        token = 'test'
 
     reset_url = url_for('reset_password', token=token, _external=True)
     message.body = reset_url
