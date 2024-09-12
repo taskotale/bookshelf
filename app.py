@@ -16,26 +16,41 @@ from werkzeug.security import check_password_hash, generate_password_hash
 
 from flask_mail import Mail, Message
 from itsdangerous import URLSafeTimedSerializer
-from dotenv import load_dotenv
 
+# from sendgrid import SendGridAPIClient
+from sendgrid import SendGridAPIClient
+from sendgrid.helpers.mail import Mail
+
+
+from dotenv import load_dotenv
+load_dotenv()
 # using helper function for login required
 
 app = Flask(__name__)
 
+
 app.config['SECRET_KEY'] = os.getenv("SECRET_KEY")
 
 app.config['SECURITY_PASSWORD_SALT'] = os.getenv("SECURITY_PASSWORD_SALT")
-# mail sending config
-app.config['MAIL_SERVER'] = 'live.smtp.mailtrap.io'
-app.config['MAIL_PORT'] = 587
-app.config['MAIL_USE_TLS'] = True
-app.config['MAIL_USE_SSL'] = False
-app.config['MAIL_USERNAME'] = ('api')
-app.config['MAIL_PASSWORD'] = os.getenv("MAIL_PASSWORD")
+# mail sending config mailtrap - not working on pythonanywhere
+# app.config['MAIL_SERVER'] = 'live.smtp.mailtrap.io'
+# app.config['MAIL_PORT'] = 587
+# app.config['MAIL_USE_TLS'] = True
+# app.config['MAIL_USE_SSL'] = False
+# app.config['MAIL_USERNAME'] = ('api')
+# app.config['MAIL_PASSWORD'] = os.getenv("MAIL_PASSWORD")
+
+# mail config for sendgrid
+# app.config['SENDGRID_API_KEY'] = os.getenv('SENDGRID_API_KEY')
+# app.config['MAIL_DEFAULT_SENDER'] = os.getenv('MAIL_DEFAULT_SENDER')
 
 
 mail = Mail(app)
 # TEST CHANGE
+
+
+# urllib.request.urlopen('https://api.sendgrid.com', context=context)
+
 
 
 def generate_token(email):
@@ -55,22 +70,43 @@ def confirm_token(token, expiration=1800):
 
 
 def send(userEmail):
-    message = Message(
-        subject='test hello',
-        recipients=[userEmail],
-        sender=('Tahir from BOOKSHELF app', 'noreply@mujic.me')
-    )
 
+    message = Mail(
+        from_email=os.environ.get('MAIL_DEFAULT_SENDER'),
+        to_emails=userEmail,
+        subject='Testing App',
+        html_content='<strong>Look!!!</strong>')
     try:
-        token = generate_token(userEmail)
-        test_token = token
+        sg = SendGridAPIClient(os.environ.get('SENDGRID_API_KEY'))
+        response = sg.send(message)
+        print(response.status_code)
+        print(response.body)
+        print(response.headers)
     except Exception as e:
-        message = e
-        secret = app.config['SECRET_KEY']
-        return secret 
-    reset_url = url_for('reset_password', token=token, _external=True)
-    message.body = reset_url
-    mail.send(message)
+        print(e)
+
+    # sg = sendgrid.SendGridAPIClient(api_key=os.environ.get('SENDGRID_API_KEY'))
+    # response = sg.client._("suppression/bounces").get()
+    # print(response.status_code)
+    # print(response.body)
+    # print(response.headers)
+
+    # message = Message(
+    #     subject='test hello',
+    #     recipients=[userEmail],
+    #     sender=('Tahir from BOOKSHELF app', 'noreply@mujic.me')
+    # )
+
+    # try:
+    #     token = generate_token(userEmail)
+    #     test_token = token
+    # except Exception as e:
+    #     message = e
+    #     secret = app.config['SECRET_KEY']
+    #     return secret
+    # reset_url = url_for('reset_password', token=token, _external=True)
+    # message.body = reset_url
+    # mail.send(message)
     return 'We sent an email with the link to reset your password'
 
 
@@ -519,7 +555,8 @@ def changePassword():
         if existingUserEmail == []:
             return render_template('forgot_password.html', message='There is no user with this email in our database.\r\n Try registering a new account')
         else:
-            return render_template('login.html', message=send(email))
+            message = send(email)
+            return render_template('login.html', message=message)
     return render_template('forgot_password.html')
 
 

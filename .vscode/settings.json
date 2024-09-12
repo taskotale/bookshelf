@@ -6,6 +6,7 @@
 	"cSpell.words": [
 		"AUTOINCREMENT",
 		"Baru",
+		"dotenv",
 		"fontawesome",
 		"Fonticons",
 		"frombytes",
@@ -18,6 +19,7 @@
 		"pyheif",
 		"pytesseract",
 		"pyzbar",
+		"sendgrid",
 		"sjutra",
 		"tesseract",
 		"werkzeug"
