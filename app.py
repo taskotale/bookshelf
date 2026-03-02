@@ -532,33 +532,37 @@ def browse():
 
 @app.route('/login', methods=['GET', 'POST'])
 def login():
-    # clear if any user already connected
+    # Clear any existing user data
     session.clear()
 
     if request.method == 'POST':
-        if not request.form.get('username'):
+        # 1. Check if the "Explore as Guest" button was clicked
+        if request.form.get('demo_login') == 'true':
+            # This logs the visitor into a specific dummy account.
+            # Replace '1' with the actual ID of your guest user in bookshelf.db.
+            session['user_id'] = 1 
+            return redirect('/')
+
+        # 2. Standard Login Logic
+        username = request.form.get('username')
+        password = request.form.get('password')
+
+        if not username:
             return render_template('login.html', message='Please input name')
-        elif not request.form.get('password'):
+        elif not password:
             return render_template('login.html', message='Please input password')
 
-        user = db.execute(
-            "SELECT * FROM users WHERE username = ?",
-            request.form.get('username')
-        )
+        user = db.execute("SELECT * FROM users WHERE username = ?", username)
 
-        if len(user) != 1 or not check_password_hash(
-            user[0]['hash'], request.form.get('password')
-        ):
+        if len(user) != 1 or not check_password_hash(user[0]['hash'], password):
             return render_template('login.html', message='Username or password incorrect')
 
         # Remember which user has logged in
         session['user_id'] = user[0]['id']
 
-        # successful login
         return redirect('/')
-    else:
-        return render_template('login.html')
-
+    
+    return render_template('login.html')
 
 @app.route('/forgot_password', methods=['GET', 'POST'])
 def changePassword():

@@ -1,33 +1,51 @@
-<!DOCTYPE html>
-
 {% extends "layout.html" %} {% block title %} Log In {% endblock %} {% block
 main %}
 <h2 class="mb-3">{{ message }}</h2>
 
-<form action="/login" method="post">
-	<div class="mb-3">
-		<input
-			autocomplete="off"
-			autofocus
-			class="form-control mx-auto w-auto"
-			id="username"
-			name="username"
-			placeholder="Username"
-			type="text"
-		/>
+<div
+	class="card mx-auto"
+	style="max-width: 22rem; border: none; background: transparent"
+>
+	<form action="/login" method="post">
+		<div class="mb-3">
+			<input
+				autocomplete="off"
+				autofocus
+				class="form-control mx-auto"
+				id="username"
+				name="username"
+				placeholder="Username"
+				type="text"
+			/>
+		</div>
+		<div class="mb-3">
+			<input
+				class="form-control mx-auto"
+				id="password"
+				name="password"
+				placeholder="Password"
+				type="password"
+			/>
+		</div>
+
+		<div class="d-grid gap-2">
+			<button class="btn btn-primary" type="submit">Log In</button>
+
+			<button
+				name="demo_login"
+				value="true"
+				class="btn btn-outline-info"
+				type="submit"
+			>
+				Explore as Guest (Demo)
+			</button>
+		</div>
+	</form>
+
+	<div class="mt-3">
+		<small>
+			<a href="{{'/forgot_password'}}" class="text-muted">forgot my password</a>
+		</small>
 	</div>
-	<div class="mb-3">
-		<input
-			class="form-control mx-auto w-auto"
-			id="password"
-			name="password"
-			placeholder="Password"
-			type="password"
-		/>
-	</div>
-	<button class="btn btn-primary" type="submit">Log In</button>
-</form>
-<small>
-	<a href="{{'/forgot_password'}}">forgot my password</a>
-</small>
+</div>
 {% endblock %}
