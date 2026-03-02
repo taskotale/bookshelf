@@ -44,28 +44,19 @@
     {% endfor %}
 	</div>
 </div>
-{% if total != 0 %} {% if page_num == total %}
-<a href="javascript:window.history.back()" class="btn btn-secondary mt-2"
-	>Previous</a
->
-{% elif page_num and page_num != 0 %}
-<a href="javascript:window.history.back()" class="btn btn-secondary mt-2"
-	>Previous</a
->
-<a
-	id="next-btn"
-	href="{{url_for('index', page=page_num+1)}}"
-	class="btn btn-secondary mt-2"
-	>Next</a
->
-{% else %}
-<a
-	id="next-btn"
-	href="{{url_for('index', page=page_num+1)}}"
-	class="btn btn-secondary mt-2"
-	>Next</a
->
-{% endif %} {%endif%} {%endif%}
+<div class="d-flex justify-content-center gap-3 mt-4 mb-5">
+        {% if total != 0 %} 
+            {% if page_num == total %}
+                <a href="javascript:window.history.back()" class="btn btn-secondary px-4">Previous</a>
+            {% elif page_num and page_num != 0 %}
+                <a href="javascript:window.history.back()" class="btn btn-secondary px-4">Previous</a>
+                <a id="next-btn" href="{{url_for('index', page=page_num+1)}}" class="btn btn-secondary px-4">Next</a>
+            {% else %}
+                <a id="next-btn" href="{{url_for('index', page=page_num+1)}}" class="btn btn-secondary px-4">Next</a>
+            {% endif %} 
+        {% endif %}
+    </div>
+{%endif%} 
 <script>
 	const searchParams = new URLSearchParams(window.location.search);
 	let key = '';

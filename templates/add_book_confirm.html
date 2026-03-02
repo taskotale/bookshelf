@@ -1,75 +1,72 @@
-<!DOCTYPE html>
+{% extends "layout.html" %}
+{% block title %} Confirm Addition {% endblock %}
 
-{% extends "layout.html" %} {% block title %} Index {% endblock %} {% block main
-%}
-<p>{{ message }}</p>
+{% block main %}
+<div class="container py-4">
+    <div class="card shadow-lg mx-auto" style="max-width: 600px; border-radius: 15px; overflow: hidden; border: none;">
+        <div class="card-header text-white p-4" style="background-color: var(--mahogany);">
+            <h4 class="mb-0 fw-bold">Confirm Your Addition</h4>
+        </div>
 
-{% if book %}
-<p>Title: {{book['title']}}</p>
-<p>Author: {% for key in book['author']%} {{key}} {%endfor%}</p>
-<p>Language: {{book['language']}}</p>
-<img class="rounded" src="data:image/jpg;base64,{{cover}}" style="max-height: 50vh"/>
-<form action="/add_book_confirm" method="post">
-	<label name="status">Did you read this book?</label>
-	<input type="checkbox" name="status" value="True" />
-	<h5>Where is this book going?</h5>
-	<div>
-		<p>Available shelves</p>
-		<select class="form-select" name="bookshelf_choice" required>
-			<option disabled>Select bookshelf</option>
-			<option value="None">Not on shelf</option>
-			{% for shelf in bookshelves%}
-			<option value="{{shelf['id']}}">{{shelf['description']}}</option>
-			{%endfor%}
-		</select>
-		<div>
-			<a href="javascript:window.history.back()" class="btn btn-secondary mt-2">Back</a>
-			<button class="btn btn-primary mt-2" name="confirm" value="first" type="submit">Confirm</button>
-		</div>
-	</div>
-</form>
-{%else%}
-<div>
-	<h3>{{ selected['description'] }}</h3>
-	<img
-		class="rounded img-fluid"
-		style="max-height: 50vh"
-		src="{{ selected['image'] }}"
-	/>
-	<form action="/add_book_confirm" method="post">
-		<ul class="text-start mt-2">
-			<li>
-				<label for="height">Up to {{selected['height']}}</label>
-				↑:
-				<input
-					name="height"
-					min="1"
-					max="{{selected['height']}}"
-					id="selected-max-height"
-					type="number"
-					required
-				/>
-				shelf from bottom
-			</li>
-			<li>
-				<label for="width" class="form-label">To {{selected['width']}}</label>
-				→:
-				<input
-					name="width"
-					min="1"
-					max="{{selected['width']}}"
-					id="selected-max-width"
-					type="number"
-					required
-				/>
-				shelf from left
-			</li>
-		</ul>
-		<a href="javascript:window.history.back()" class="btn btn-secondary mt-2"
-			>back</a
-		>
-		<button class="btn btn-primary mt-2" name="confirm" value="location" type="submit">confirm</button>
-	</form>
+        <div class="card-body p-4 bg-white">
+            {% if book %}
+            <div class="row g-4 align-items-center">
+                <div class="col-md-5">
+                    <img class="img-fluid rounded shadow-sm" src="data:image/jpg;base64,{{cover}}" alt="Cover Preview" style="max-height: 300px;">
+                </div>
+                <div class="col-md-7 text-start">
+                    <h5 class="fw-bold mb-1">{{book['title']}}</h5>
+                    <p class="text-muted small mb-3">By {% for key in book['author']%} {{key}} {%endfor%}</p>
+                    
+                    <form action="/add_book_confirm" method="post">
+                        <div class="form-check form-switch mb-4">
+                            <input class="form-check-input" type="checkbox" name="status" value="True" id="readCheck">
+                            <label class="form-check-label fw-bold small" for="readCheck">I have already read this book</label>
+                        </div>
+
+                        <label class="form-label fw-bold small">Assign to a Bookshelf</label>
+                        <select class="form-select mb-4 shadow-none" name="bookshelf_choice" required>
+                            <option value="None" selected>Not on a shelf yet</option>
+                            {% for shelf in bookshelves%}
+                            <option value="{{shelf['id']}}">{{shelf['description']}}</option>
+                            {%endfor%}
+                        </select>
+
+                        <div class="d-flex gap-2">
+                            <a href="javascript:window.history.back()" class="btn btn-outline-secondary flex-grow-1">Back</a>
+                            <button class="btn btn-primary flex-grow-1 fw-bold" name="confirm" value="first" type="submit">Next Step</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+
+            {% else %}
+            <div class="text-center">
+                <h5 class="fw-bold mb-3" style="color: var(--mahogany);">Placement for: {{ selected['description'] }}</h5>
+                <div class="shelf-frame mb-4 mx-auto rounded" style="max-width: 300px; height: 200px; background-color: #eee;">
+                    <img src="{{ selected['image'] }}" class="img-fluid rounded" style="max-height: 100%; object-fit: cover;">
+                </div>
+
+                <form action="/add_book_confirm" method="post">
+                    <div class="row g-3 justify-content-center mb-4 text-start">
+                        <div class="col-sm-6">
+                            <label class="form-label small fw-bold">Shelf Level (↑ 1 to {{selected['height']}})</label>
+                            <input name="height" min="1" max="{{selected['height']}}" class="form-control" type="number" value="1" required>
+                        </div>
+                        <div class="col-sm-6">
+                            <label class="form-label small fw-bold">Position (→ 1 to {{selected['width']}})</label>
+                            <input name="width" min="1" max="{{selected['width']}}" class="form-control" type="number" value="1" required>
+                        </div>
+                    </div>
+
+                    <div class="d-flex gap-2">
+                        <a href="javascript:window.history.back()" class="btn btn-outline-secondary flex-grow-1">Back</a>
+                        <button class="btn btn-primary flex-grow-1 fw-bold" name="confirm" value="location" type="submit">Place on Shelf</button>
+                    </div>
+                </form>
+            </div>
+            {% endif %}
+        </div>
+    </div>
 </div>
-
-{%endif%} {% endblock %}
+{% endblock %}

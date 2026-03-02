@@ -1,42 +1,67 @@
-<!DOCTYPE html>
+{% extends "layout.html" %} 
+{% block title %} Build a Shelf {% endblock %} 
 
+{% block main %}
+<div class="container d-flex flex-column align-items-center justify-content-center" style="min-height: 60vh;">
+    <div class="text-center mb-4">
+        <h2 class="fw-bold" style="color: var(--mahogany);">Build a New Shelf</h2>
+        <p class="text-muted">{{ message }}</p>
+    </div>
 
-{% extends "layout.html" %} {% block title %} Add Book {% endblock %} {% block
-main %}
-<h3>Add a bookshelf</h3>
-<p>{{ message }}</p>
-<div>
-	<form action="/add_bookshelf" enctype="multipart/form-data" method="post">
-		<input class="form-control mb-3"
-			autocomplete="off"
-			default="1"
-			min="1"
-			name="width"
-			placeholder="How many shelves wide?"
-			type="number"
-		/>
-		<input class="form-control mb-3"
-			autocomplete="off"
-			default="1"
-			min="1"
-			name="height"
-			placeholder="How many shelves high?"
-			type="number"
-		/>
-		<input class="form-control mb-3"
-			autocomplete="off"
-			name="description"
-			placeholder="Give the shelf a name"
-			required
-		/>
-		<div class="input-group">
-			<input accept="jpg" class="form-control" name="image" type="file" />
-			<button class="btn btn-primary" name="add" type="submit">Add</button>
-		</div>
-	</form>
+    <div class="card shadow-lg p-4" style="width: 100%; max-width: 500px; border-radius: 15px; border-top: 6px solid var(--mahogany); background-color: #fff;">
+        <form action="/add_bookshelf" enctype="multipart/form-data" method="post">
+            <div class="row g-3">
+                <div class="col-md-6">
+                    <div class="form-floating mb-3">
+                        <input class="form-control" autocomplete="off" name="width" id="sWidth" placeholder="Width" type="number" min="1" required />
+                        <label for="sWidth">Shelves Wide</label>
+                    </div>
+                </div>
+                <div class="col-md-6">
+                    <div class="form-floating mb-3">
+                        <input class="form-control" autocomplete="off" name="height" id="sHeight" placeholder="Height" type="number" min="1" required />
+                        <label for="sHeight">Shelves High</label>
+                    </div>
+                </div>
+
+                <div class="col-12">
+                    <div class="form-floating mb-3">
+                        <input class="form-control" autocomplete="off" name="description" id="sName" placeholder="Shelf Name" required />
+                        <label for="sName">Shelf Name (e.g., Living Room Main)</label>
+                    </div>
+                </div>
+
+                <div class="col-12 mb-4">
+                    <label class="form-label small fw-bold text-muted">Shelf Background Image</label>
+                    <div class="input-group">
+                        <input accept=".jpg,.jpeg" class="form-control" name="image" id="sImage" type="file" required />
+                    </div>
+                    <div id="preview-container" class="mt-3 text-center d-none">
+                        <img id="image-preview" src="#" alt="Preview" class="img-thumbnail" style="max-height: 200px;">
+                    </div>
+                </div>
+
+                <div class="col-12">
+                    <button class="btn btn-primary w-100 py-2 fw-bold" name="add" type="submit">
+                        Construct Shelf
+                    </button>
+                </div>
+            </div>
+        </form>
+    </div>
 </div>
-<div>
-	<img src="{{path}}" />
-</div>
+{% endblock %}
 
+{% block script %}
+<script>
+    // Preview logic for the shelf background image
+    document.getElementById('sImage').onchange = evt => {
+        const [file] = document.getElementById('sImage').files;
+        if (file) {
+            const preview = document.getElementById('image-preview');
+            preview.src = URL.createObjectURL(file);
+            document.getElementById('preview-container').classList.remove('d-none');
+        }
+    }
+</script>
 {% endblock %}

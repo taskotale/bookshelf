@@ -1,322 +1,154 @@
-<!DOCTYPE html>
+{% extends "index.html" %} 
 
+{% block book_details %}
+<div class="modal fade" id="exampleModal" tabindex="-1" aria-hidden="true" data-bs-backdrop="static">
+    <div class="modal-dialog modal-lg modal-dialog-centered">
+        <div class="modal-content border-0 shadow-lg" style="border-radius: 15px; overflow: hidden;">
+            
+            <div class="modal-header border-0 pb-0 px-4 pt-4">
+                <h4 class="modal-title fw-bold" style="color: var(--mahogany);">Book Details</h4>
+                <a href="javascript:window.history.back()" class="btn-close" aria-label="Close"></a>
+            </div>
 
-{% extends "index.html" %} {% block book_details %}
-<div
-	class="modal fade"
-	id="exampleModal"
-	tabindex="-1"
-	aria-labelledby="exampleModalLabel"
-	aria-hidden="true"
-	data-bs-keyboard="false"
-	data-bs-backdrop="static"
->
-	<div class="modal-dialog modal-dialog-centered text-start">
-		<div class="modal-content">
-			<div class="modal-header">
-				<h5 class="modal-title" id="exampleModalLabel">
-					{{ book_details['title'] }} by {{ book_details['author'] }}
-				</h5>
-				<a
-					href="javascript:window.history.back()"
-					type="button"
-					class="btn-close"
-					aria-label="Close"
-				></a>
-			</div>
-			<form action="/book_details" id="modal-form" method="post">
-				<input name="book_id" value="{{ book_details['id'] }}" type="hidden" />
-				<div class="modal-body">
-					<ul>
-						<li>
-							Title:
-							<span class="edit" data-input="title_input"
-								>{{ book_details['title'] }}</span
-							><input
-								name="title"
-								id="title_input"
-								style="display: none"
-								value="{{ book_details['title'] }}"
-							/>
-						</li>
-						<li>
-							Author:
-							<span class="edit" data-input="author-input"
-								>{{ book_details['author'] }}</span
-							>
-							<input
-								name="author"
-								id="author-input"
-								style="display: none"
-								value="{{ book_details['author'] }}"
-							/>
-						</li>
-						<li>
-							Language:
-							<select
-								id="language"
-								data-default="{{ book_details['language'] }}"
-								name="language"
-							>
-								<option value="EN">English</option>
-								<option value="AF">Afrikaans</option>
-								<option value="SQ">Albanian</option>
-								<option value="AR">Arabic</option>
-								<option value="HY">Armenian</option>
-								<option value="EU">Basque</option>
-								<option value="BN">Bengali</option>
-								<option value="BG">Bulgarian</option>
-								<option value="CA">Catalan</option>
-								<option value="KM">Cambodian</option>
-								<option value="ZH">Chinese (Mandarin)</option>
-								<option value="HR">Croatian</option>
-								<option value="CS">Czech</option>
-								<option value="DA">Danish</option>
-								<option value="NL">Dutch</option>
-								<option value="ET">Estonian</option>
-								<option value="FJ">Fiji</option>
-								<option value="FI">Finnish</option>
-								<option value="FR">French</option>
-								<option value="KA">Georgian</option>
-								<option value="DE">German</option>
-								<option value="EL">Greek</option>
-								<option value="GU">Gujarati</option>
-								<option value="HE">Hebrew</option>
-								<option value="HI">Hindi</option>
-								<option value="HU">Hungarian</option>
-								<option value="IS">Icelandic</option>
-								<option value="ID">Indonesian</option>
-								<option value="GA">Irish</option>
-								<option value="IT">Italian</option>
-								<option value="JA">Japanese</option>
-								<option value="JW">Javanese</option>
-								<option value="KO">Korean</option>
-								<option value="LA">Latin</option>
-								<option value="LV">Latvian</option>
-								<option value="LT">Lithuanian</option>
-								<option value="ME">Montenegrin</option>
-								<option value="MK">Macedonian</option>
-								<option value="MS">Malay</option>
-								<option value="ML">Malayalam</option>
-								<option value="MT">Maltese</option>
-								<option value="MI">Maori</option>
-								<option value="MR">Marathi</option>
-								<option value="MN">Mongolian</option>
-								<option value="NE">Nepali</option>
-								<option value="NO">Norwegian</option>
-								<option value="FA">Persian</option>
-								<option value="PL">Polish</option>
-								<option value="PT">Portuguese</option>
-								<option value="PA">Punjabi</option>
-								<option value="QU">Quechua</option>
-								<option value="RO">Romanian</option>
-								<option value="RU">Russian</option>
-								<option value="SM">Samoan</option>
-								<option value="SR">Serbian</option>
-								<option value="SK">Slovak</option>
-								<option value="SL">Slovenian</option>
-								<option value="ES">Spanish</option>
-								<option value="SW">Swahili</option>
-								<option value="SV">Swedish</option>
-								<option value="TA">Tamil</option>
-								<option value="TT">Tatar</option>
-								<option value="TE">Telugu</option>
-								<option value="TH">Thai</option>
-								<option value="BO">Tibetan</option>
-								<option value="TO">Tonga</option>
-								<option value="TR">Turkish</option>
-								<option value="UK">Ukrainian</option>
-								<option value="UR">Urdu</option>
-								<option value="UZ">Uzbek</option>
-								<option value="VI">Vietnamese</option>
-								<option value="CY">Welsh</option>
-								<option value="XH">Xhosa</option>
-							</select>
-						</li>
-						<li>
-							Read status: {% if book_details['status'] %}
-							<input type="checkbox" name="status" value="True" checked />
-							{%else%}
-							<input type="checkbox" name="status" value="True" />
-							{% endif %}
-						</li>
-						<li>
-							Borrowed: {% if book_details['borrowed'] %}
-							<input
-								id="borrowed"
-								type="checkbox"
-								name="borrowed"
-								value="True"
-								checked
-							/>
-							{%else%}
-							<input
-								id="borrowed"
-								type="checkbox"
-								name="borrowed"
-								value="True"
-							/>
-							{% endif %}
-						</li>
-						<li>
-							Notes:
-							<span class="edit" data-input="note-input"
-								>{{ book_details['note'] }}</span
-							>
-							<input
-								id="note-input"
-								name="note"
-								style="display: none"
-								value="{{ book_details['note'] }}"
-							/>
-						</li>
-						<li>
-							Location:
-							<span
-								class="edit"
-								id="current-shelf"
-								data-input="location-input"
-								name="location-input"
-								data-default="{{book_details['bookshelf_id']}}"
-							>
-								{% if book_details['bookshelf_id'] == None %} Not on shelf {%
-								else %} {{shelf[0]['description']}}
-								<ul>
-									<li>↑: {{ book_details['location_y'] }} shelf from bottom</li>
-									<li>→: {{ book_details['location_x'] }} shelf from left</li>
-								</ul>
-								{%endif%}
-							</span>
-							<select
-								class="form-select"
-								name="location-input"
-								id="location-input"
-								style="display: none"
-							>
-								<option id="hey" value="None">Not on shelf</option>
-								{% for shelf in bookshelves%}
-								<option
-									value="{{shelf['id']}}"
-									data-height="{{shelf['height']}}"
-									data-width="{{shelf['width']}}"
-								>
-									{{shelf['description']}}
-								</option>
-								{%endfor%}
-							</select>
-							<ul id="hi-wi" style="display: none">
-								<li>
-									<label>Up to {{ book_details['location_y'] }}</label>
-									↑:
-									<input
-										name="selected-max-height"
-										min="1"
-										id="selected-max-height"
-										type="number"
-										
-									/>
-									shelf from bottom
-								</li>
-								<li>
-									<label>Up to {{ book_details['location_x'] }}</label>
-									→:
-									<input
-										name="selected-max-width"
-										min="1"
-										id="selected-max-width"
-										type="number"
-										
-									/>
-									shelf from left
-								</li>
-							</ul>
-						</li>
-					</ul>
-				</div>
-				<div class="modal-footer">
-					<div class="float-left" style="margin-right: auto">
-						<button name="submit" value="edit" style="display: none"></button>
-						<button
-							id="delete-btn"
-							name="submit"
-							class="btn btn-danger"
-							value="delete"
-						>
-							Delete
-						</button>
-					</div>
-					<div class="float-right">
-						<a
-							href="javascript:window.history.back()"
-							type="button"
-							class="btn btn-secondary"
-							>Back</a
-						>
-						<button
-							id="edit-book"
-							name="submit"
-							value="edit"
-							type="submit"
-							class="btn btn-primary"
-						>
-							Edit
-						</button>
-					</div>
-				</div>
-			</form>
-		</div>
-	</div>
+            <form action="/book_details" id="modal-form" method="post">
+                <input name="book_id" value="{{ book_details['id'] }}" type="hidden" />
+                
+                <div class="modal-body px-4">
+                    <div class="row g-4">
+                        <div class="col-md-5 text-center">
+                            <div class="shelf-frame rounded shadow-sm mb-3" style="height: 350px; background: #eee;">
+                                <img src="{{ book_details['image'] }}" class="img-fluid rounded" style="max-height: 100%; object-fit: contain;" alt="Cover">
+                            </div>
+                            <div class="d-flex justify-content-around p-2 bg-light rounded">
+                                <div class="text-center">
+                                    <small class="text-muted d-block">Read</small>
+                                    <input type="checkbox" name="status" value="True" {% if book_details['status'] %}checked{% endif %} class="form-check-input">
+                                </div>
+                                <div class="text-center">
+                                    <small class="text-muted d-block">Borrowed</small>
+                                    <input id="borrowed" type="checkbox" name="borrowed" value="True" {% if book_details['borrowed'] %}checked{% endif %} class="form-check-input">
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="col-md-7">
+                            <ul class="list-group list-group-flush">
+                                <li class="list-group-item px-0">
+                                    <label class="small text-muted fw-bold">Title</label>
+                                    <div class="edit-trigger" data-input="title_input">
+                                        <span class="d-block py-1">{{ book_details['title'] }}</span>
+                                        <input name="title" id="title_input" class="form-control form-control-sm mt-1 shadow-none" style="display: none" value="{{ book_details['title'] }}">
+                                    </div>
+                                </li>
+                                <li class="list-group-item px-0">
+                                    <label class="small text-muted fw-bold">Author</label>
+                                    <div class="edit-trigger" data-input="author-input">
+                                        <span class="d-block py-1">{{ book_details['author'] }}</span>
+                                        <input name="author" id="author-input" class="form-control form-control-sm mt-1 shadow-none" style="display: none" value="{{ book_details['author'] }}">
+                                    </div>
+                                </li>
+                                <li class="list-group-item px-0">
+                                    <label class="small text-muted fw-bold">Language</label>
+                                    <select id="language" name="language" class="form-select form-select-sm mt-1" data-default="{{ book_details['language'] }}">
+                                        <option value="EN">English</option>
+                                        <option value="HR">Croatian / Montenegrin</option>
+                                        </select>
+                                </li>
+                                <li class="list-group-item px-0">
+                                    <label class="small text-muted fw-bold">Location & Shelf</label>
+                                    <div id="current-shelf" class="edit-trigger" data-input="location-input" data-default="{{book_details['bookshelf_id']}}">
+                                        {% if book_details['bookshelf_id'] == None %}
+                                            <span class="d-block text-muted small">Not on shelf</span>
+                                        {% else %}
+                                            <span class="d-block">{{shelf[0]['description']}} (↑: {{ book_details['location_y'] }}, →: {{ book_details['location_x'] }})</span>
+                                        {% endif %}
+                                    </div>
+                                    
+                                    <select class="form-select form-select-sm mt-2" name="location-input" id="location-input" style="display: none">
+                                        <option value="None">Not on shelf</option>
+                                        {% for shelf in bookshelves %}
+                                            <option value="{{shelf['id']}}" data-height="{{shelf['height']}}" data-width="{{shelf['width']}}">{{shelf['description']}}</option>
+                                        {% endfor %}
+                                    </select>
+                                    
+                                    <div id="hi-wi" class="mt-2 p-2 bg-light rounded" style="display: none">
+                                        <div class="row g-2">
+                                            <div class="col-6">
+                                                <label class="tiny-label">Shelf #</label>
+                                                <input name="selected-max-height" id="selected-max-height" class="form-control form-control-sm" type="number">
+                                            </div>
+                                            <div class="col-6">
+                                                <label class="tiny-label">Position #</label>
+                                                <input name="selected-max-width" id="selected-max-width" class="form-control form-control-sm" type="number">
+                                            </div>
+                                        </div>
+                                    </div>
+                                </li>
+                                <li class="list-group-item px-0">
+                                    <label class="small text-muted fw-bold">Private Notes</label>
+                                    <div class="edit-trigger" data-input="note-input">
+                                        <span class="d-block small py-1">{{ book_details['note'] if book_details['note'] else 'Click to add a note...' }}</span>
+                                        <textarea id="note-input" name="note" class="form-control form-control-sm mt-1" style="display: none">{{ book_details['note'] }}</textarea>
+                                    </div>
+                                </li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="modal-footer border-0 p-4">
+                    <button id="delete-btn" name="submit" class="btn btn-outline-danger btn-sm" value="delete">Delete Book</button>
+                    <div class="ms-auto">
+                        <a href="javascript:window.history.back()" class="btn btn-secondary btn-sm px-4">Close</a>
+                        <button id="edit-book" name="submit" value="edit" type="submit" class="btn btn-primary btn-sm px-4">Save Changes</button>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
 </div>
 
-{% endblock %} {% block script %}
+<style>
+    .edit-trigger { cursor: pointer; border-radius: 4px; transition: background 0.2s; padding: 2px 5px; }
+    .edit-trigger:hover { background-color: #f0f0f0; }
+    .tiny-label { font-size: 0.65rem; text-transform: uppercase; font-weight: 800; color: #999; }
+</style>
+{% endblock %}
+
+{% block script %}
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
 <script>
-	$(document).ready(function () {
-		$('#exampleModal').modal('show');
-	});
+    $(document).ready(function () {
+        $('#exampleModal').modal('show');
 
-	$('#delete-btn').click(e=>confirm('Are you sure?'))
+        // Toggle Edit Inputs
+        $('.edit-trigger').click(function() {
+            const inputId = $(this).data('input');
+            $(this).find('span').hide();
+            $('#' + inputId).fadeIn().focus();
+        });
 
-	function clickEdit(event) {
-		const target = $(this).data('input');
-		$(this).css('display', 'none');
-		console.log($(this));
-		console.log(target);
-		$('#' + target).css('display', 'inline-block');
-	}
-	$('.edit').click(clickEdit);
+        // Delete Confirmation
+        $('#delete-btn').click(e => confirm('Are you sure you want to remove this book?'));
 
-	const lang = $('#language').attr('data-default').toUpperCase();
-	$('#language').val(lang).attr('selected', 'selected');
+        // Handle Shelf Logic
+        const lang = $('#language').attr('data-default').toUpperCase();
+        $('#language').val(lang);
 
-	const defaultShelf = $('#current-shelf').attr('data-default');
-	$('#location-input').val(defaultShelf).attr('selected', 'selected');
+        const defaultShelf = $('#current-shelf').attr('data-default');
+        $('#location-input').val(defaultShelf);
 
-	$('#location-input').on('change', function () {
-		maxHeight = $(this).find('option:selected').data('height');
-		maxWidth = $(this).find('option:selected').data('width');
-		if (maxHeight) {
-			$('#hi-wi').css('display', 'inline-block');
-			$('#selected-max-height').attr('max', maxHeight);
-			$('#selected-max-width').attr('max', maxWidth);
-		} else {
-			$('#hi-wi').css('display', 'none');
-		}
-	});
-
-	$('#borrowed').on('click', () => {
-		console.log(borrowed.checked);
-		if (borrowed.checked) {
-			$('#location-input :first-child').attr('selected', 'selected');
-			$('span#current-shelf').text('Not on shelf');
-			$('span#current-shelf').off('click', clickEdit);
-			$('#location-input').css('display', 'none');
-			$('span#current-shelf').css('display', 'inline-block');
-			$('#hi-wi').css('display', 'none');
-		} else {
-			$('span#current-shelf').on('click', clickEdit);
-		}
-	});
+        $('#location-input').on('change', function () {
+            const maxHeight = $(this).find('option:selected').data('height');
+            const maxWidth = $(this).find('option:selected').data('width');
+            if (maxHeight) {
+                $('#hi-wi').fadeIn();
+                $('#selected-max-height').attr('max', maxHeight).val(1);
+                $('#selected-max-width').attr('max', maxWidth).val(1);
+            } else {
+                $('#hi-wi').hide();
+            }
+        });
+    });
 </script>
-
 {% endblock %}
