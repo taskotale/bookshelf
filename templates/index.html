@@ -1,5 +1,4 @@
-<!DOCTYPE html>
-
+<!doctype html>
 
 {% extends "layout.html" %} {% block title %} Index {% endblock %} {% block main
 %}
@@ -7,52 +6,42 @@
 <p>Found {{ book_num }} book(s)</p>
 <div>
 	{% if books %}
-	<div class="row row-cols-1 row-cols-md-2 g-4 justify-content-center">
-		{% for book in books %}
-		<div class="col" style="max-width: 15rem">
-			{% if message != 'You don`t have this book but you check it out online'%}
-			<a
-				class="book-card"
-				href="{{url_for('book_details', id=book['id'], page=page_num)}}"
-			>
-				{%endif%}
-				<div class="card">
-					{% if message != 'You don`t have this book but you check it out online'
-					%}
-					<img
-						src="{{ book['image'] }}"
-						class="card-img-top rounded"
-						alt="..."
-					/>
-					{%else%}
-					<img
-					src="data:image/jpg;base64,{{book['cover']}}"
-					class="card-img-top rounded"
-					alt=""
-					/>
-					{%endif%}
-					<div class="card-body">
-						<h5 class="card-title">{{ book['title'] }}</h5>
-						<p class="card-text">{{ book['author'] }}</p>
-					
-					{% if message == 'You don`t have this book but you check it out online'%}
-						<a class="btn btn-outline-secondary" target="_blank" rel="noopener noreferrer" href="{{ book['link'] }}">Google</a>
-						<a class="btn btn-outline-secondary" target="_blank" rel="noopener noreferrer" href="https://www.amazon.com/s?k={{book['title']}}&i=stripbooks&crid=2MGDPOH75D0YP&sprefix=a%2Cstripbooks%2C109&ref=nb_sb_noss_2">Amazon</a>
+	<div class="row justify-content-center g-4">
+{% for book in books %}
+    <div class="col-auto">
+        <div class="card h-100" style="width: 15rem;">
+            {# Image Logic #}
+            {% if 'static/' in book['image']|string or 'static/' in book['cover']|string %}
+                <img src="{{ book['image'] }}" class="card-img-top rounded" alt="Local Cover" />
+            {% else %}
+                <img src="data:image/jpeg;base64,{{ book['cover'] }}" class="card-img-top rounded" alt="Online Cover" />
+            {% endif %}
 
-						<form action="/add_book_from_find" method="post">
-							<input name="title" value="{{book['title']}}" type="hidden">
-							<input name="author" value="{{book['author']}}" type="hidden">
-							<input name="language" value="{{book['language']}}" type="hidden">
-							<input name="cover" value="{{book['cover']}}" type="hidden">
-							<button class="btn btn-outline-primary mt-2" type="submit">Add to collection</button>
-						</form>
-					{%endif%}
-
-					</div>
-				</div>
-			</a>
-		</div>
-		{% endfor %}
+            <div class="card-body d-flex flex-column">
+                <h5 class="card-title">{{ book['title'] }}</h5>
+                <p class="card-text text-muted">{{ book['author'] }}</p>
+                
+                <div class="mt-auto">
+                    {% if 'static/' in book['image']|string or 'static/' in book['cover']|string %}
+                        <a href="{{url_for('book_details', id=book['id'], page=page_num)}}" class="btn btn-sm btn-outline-primary w-100">Details</a>
+                    {% else %}
+                        <div class="d-flex gap-2 mb-2">
+                            <a class="btn btn-sm btn-outline-secondary flex-grow-1" target="_blank" href="{{ book['link'] }}">Google</a>
+                            <a class="btn btn-sm btn-outline-secondary flex-grow-1" target="_blank" href="https://www.amazon.com/s?k={{book['title']}}">Amazon</a>
+                        </div>
+                        <form action="/add_book_from_find" method="post">
+                            <input name="title" value="{{book['title']}}" type="hidden">
+                            <input name="author" value="{{book['author']}}" type="hidden">
+                            <input name="language" value="{{book['language']}}" type="hidden">
+                            <input name="cover" value="{{book['cover']}}" type="hidden">
+                            <button class="btn btn-primary btn-sm w-100" type="submit">Add to collection</button>
+                        </form>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    </div>
+    {% endfor %}
 	</div>
 </div>
 {% if total != 0 %} {% if page_num == total %}

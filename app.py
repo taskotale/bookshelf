@@ -188,17 +188,32 @@ def index():
     borrowed = request.args.get('borrowed')
     message = 'Your book collection'
     if query_request != 'None':
-        # added for potential deeper search
-        # query_request_split = query_request.split()
-        books = db.execute("SELECT id,title, author, image FROM books WHERE user_id = ? AND title LIKE ? OR author LIKE ?;",
-                           session['user_id'], '%'+query_request+'%', '%'+query_request+'%')
-        if books == []:
-            message = 'You dont have this book but you can check it out online!'
-            books = search_for_books(query_request)
-            if books == None:
-                books = []
+        # 1. Search local database first
+        books = db.execute(
+            "SELECT id, title, author, image FROM books WHERE user_id = ? AND (title LIKE ? OR author LIKE ?);",
+            session['user_id'], '%' + query_request + '%', '%' + query_request + '%'
+        )
+        
+        # 2. If not found locally, attempt online search with safety checks
+        if not books:
+                    message = f'Not on your shelf. Searching online for "{query_request.title()}"...'
+                    try:
+                        # This calls your external helper function
+                        online_books = search_for_books(query_request)
+                        
+                        # Robustness Check: Ensure we got a list and it's not empty
+                        if online_books and isinstance(online_books, list):
+                            books = online_books
+                        else:
+                            books = []
+                            message = f'Sorry, we couldn’t find "{query_request.title()}" online either.'
+                    except Exception as e:
+                        # Prevents the 500 Internal Server Error
+                        print(f"API Connection Error: {e}")
+                        books = []
+                        message = "Online search is currently offline. Please try again in a moment."
         else:
-            message = 'Search result for: ' + query_request.title()
+                    message = f'Found in your collection: {query_request.title()}'
     elif bookshelves_request != 'None':
         books = db.execute(
             "SELECT id,title, author, image FROM books WHERE bookshelf_id = ?", bookshelves_request)
