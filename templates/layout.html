@@ -10,6 +10,10 @@
 			integrity="sha384-1BmE4kWBq78iYhFldvKuhfTAU6auU8tT94WrHftjDbrCEXSU1oBoqyl2QvZ6jIW3"
 			rel="stylesheet"
 		/>
+		<link
+			href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css"
+			rel="stylesheet"
+		/>
 		<script
 			crossorigin="anonymous"
 			src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"
@@ -38,7 +42,7 @@
 				transition: color 0.2s;
 			}
 
-			/* Navbar Redesign */
+			/* Navbar */
 			.navbar {
 				background-color: var(--shelf-gold) !important;
 				border-bottom: 4px solid var(--mahogany);
@@ -52,6 +56,19 @@
 				font-size: 1.5rem;
 			}
 
+			.version-badge {
+				display: inline-block;
+				font-size: 0.6rem;
+				letter-spacing: 1px;
+				vertical-align: middle;
+				background-color: var(--mahogany);
+				color: var(--parchment);
+				border-radius: 999px;
+				padding: 0.2rem 0.55rem;
+				margin-left: 0.4rem;
+				font-weight: 600;
+			}
+
 			.nav-link {
 				color: var(--mahogany) !important;
 				font-weight: 500;
@@ -63,28 +80,41 @@
 				opacity: 0.8;
 			}
 
-			/* Custom Dropdown for Search */
 			.dropdown-menu {
 				background-color: var(--parchment) !important;
 				border: 2px solid var(--mahogany) !important;
-				box-shadow: 0 4px 10px rgba(0,0,0,0.15);
+				box-shadow: 0 4px 10px rgba(0, 0, 0, 0.15);
 			}
 
-			/* Main Content Area */
+			.demo-banner {
+				background-color: #fff3cd;
+				color: #664d03;
+				border-bottom: 1px solid #ffe69c;
+				padding: 0.4rem 1rem;
+			}
+
+			.demo-banner a {
+				color: var(--mahogany);
+				font-weight: 600;
+			}
+
 			main {
 				flex: 1 0 auto;
 			}
 
-			/* Footer Redesign */
+			/* Footer */
 			footer {
-				height: 15vh;
 				width: 100%;
+				margin-top: auto;
+			}
+
+			.footer-strip {
+				height: 15vh;
+				min-height: 90px;
 				background-image: url('/static/shelf-filled-with-books-.png');
 				background-position: center;
 				background-size: cover;
 				border-top: 5px solid var(--mahogany);
-				position: relative;
-				margin-top: auto;
 			}
 
 			.footer-tag {
@@ -96,7 +126,23 @@
 				border: 1px solid var(--mahogany);
 			}
 
-			/* Utility Classes */
+			.legacy-bar {
+				background-color: var(--mahogany);
+				color: var(--parchment);
+				padding: 0.6rem 1rem;
+				font-size: 0.85rem;
+			}
+
+			.legacy-bar a {
+				color: var(--shelf-gold);
+				font-weight: 600;
+				white-space: nowrap;
+			}
+
+			.legacy-bar a:hover {
+				color: #fff;
+			}
+
 			.btn-primary {
 				background-color: var(--mahogany) !important;
 				border-color: var(--mahogany) !important;
@@ -106,15 +152,15 @@
 				background-color: var(--accent-red) !important;
 			}
 		</style>
-		
+
 		<title>Bookshelf: {% block title %}{% endblock %}</title>
 	</head>
 
 	<body>
 		<nav class="navbar navbar-expand-md navbar-light sticky-top">
 			<div class="container-fluid px-4">
-				<a class="navbar-brand" href="/">BOOKSHELF</a>
-				
+				<a class="navbar-brand" href="/">BOOKSHELF<span class="version-badge" title="This is the original 2024 version">v{{ app_version }}</span></a>
+
 				<button
 					aria-controls="navbar"
 					aria-expanded="false"
@@ -131,23 +177,11 @@
 					{% if session["user_id"] %}
 					<ul class="navbar-nav me-auto">
 						<li class="nav-item dropdown">
-							<a
-								class="nav-link dropdown-toggle"
-								data-bs-toggle="dropdown"
-								href="#"
-								role="button"
-								aria-expanded="false"
-								>Find</a
-							>
+							<a class="nav-link dropdown-toggle" data-bs-toggle="dropdown" href="#" role="button" aria-expanded="false">Find</a>
 							<ul class="dropdown-menu p-3">
 								<form action="/" method="get">
 									<div class="input-group">
-										<input
-											class="form-control"
-											name="find"
-											placeholder="Search..."
-											type="text"
-										/>
+										<input class="form-control" name="find" placeholder="Title or author..." type="text" />
 										<button class="btn btn-primary" type="submit">Go!</button>
 									</div>
 								</form>
@@ -163,13 +197,13 @@
 							<a class="nav-link" href="/add_bookshelf">Add Shelf</a>
 						</li>
 					</ul>
-					
+
 					<ul class="navbar-nav ms-auto align-items-center">
 						<li class="nav-item">
-							<a class="nav-link btn btn-outline-secondary btn-sm px-3 mx-2 mb-2 mb-md-0" href="{{url_for('index', borrowed=true)}}">Borrowed</a>
+							<a class="nav-link btn btn-outline-secondary btn-sm px-3 mx-2 mb-2 mb-md-0" href="{{ url_for('index', borrowed=true) }}">Borrowed</a>
 						</li>
 						<li class="nav-item">
-							<a class="nav-link btn btn-outline-primary btn-sm px-3 mx-2 mb-2 mb-md-0" href="{{url_for('index', random=true)}}">Surprise me!</a>
+							<a class="nav-link btn btn-outline-primary btn-sm px-3 mx-2 mb-2 mb-md-0" href="{{ url_for('index', random=true) }}">Surprise me!</a>
 						</li>
 						<li class="nav-item">
 							<a class="nav-link" href="/logout">Log Out</a>
@@ -189,12 +223,38 @@
 			</div>
 		</nav>
 
+		{% if demo_read_only %}
+		<div class="demo-banner text-center small">
+			<i class="bi bi-eye"></i> You are browsing the guest account, which is read-only.
+			<a href="/register">Create your own bookshelf</a>
+		</div>
+		{% endif %}
+
 		<main class="container-fluid py-5">
+			{% with messages = get_flashed_messages() %}
+			{% if messages %}
+			<div class="container mb-4">
+				{% for msg in messages %}
+				<div class="alert alert-warning alert-dismissible fade show py-2 small" role="alert">
+					{{ msg }}
+					<button type="button" class="btn-close btn-sm" data-bs-dismiss="alert" aria-label="Close"></button>
+				</div>
+				{% endfor %}
+			</div>
+			{% endif %}
+			{% endwith %}
+
 			{% block main %}{% endblock %}
 		</main>
 
-		<footer class="d-flex align-items-center justify-content-center">
-			<div class="footer-tag">Made by Tahir Mujic</div>
+		<footer>
+			<div class="footer-strip d-flex align-items-center justify-content-center">
+				<div class="footer-tag">Made by Tahir Mujic</div>
+			</div>
+			<div class="legacy-bar text-center">
+				<strong>Bookshelf {{ app_version }}</strong> &middot; the original 2024 version, kept as-is for the portfolio.
+				<a href="{{ v2_url }}" target="_blank" rel="noopener">Version 2.0 is in progress <i class="bi bi-arrow-right"></i></a>
+			</div>
 		</footer>
 
 		{% block script %}{% endblock %}

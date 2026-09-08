@@ -1,0 +1,13 @@
+{% extends "layout.html" %}
+{% block title %} Oops {% endblock %}
+
+{% block main %}
+<div class="container d-flex align-items-center justify-content-center" style="min-height: 40vh;">
+    <div class="text-center">
+        <i class="bi bi-journal-x display-1" style="color: var(--mahogany); opacity: 0.4;"></i>
+        <h2 class="fw-bold mt-3" style="color: var(--mahogany);">{{ code }}</h2>
+        <p class="text-muted">{{ message }}</p>
+        <a href="/" class="btn btn-primary mt-2 px-4">Back to my books</a>
+    </div>
+</div>
+{% endblock %}

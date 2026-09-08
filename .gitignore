@@ -1,8 +1,18 @@
+# secrets
 .env
-.envsendgrid.env
-sendgrid.env
-sendgrid.env
-sendgrid.env
-sendgrid.env
-sendgrid.env
-sendgrid.env
+*.env
+
+# python
+venv/
+.venv*/
+__pycache__/
+*.pyc
+.pytest_cache/
+
+# runtime data (the live database holds real user data and must never be pushed)
+bookshelf.db
+flask_session/
+
+# editor / os / tooling
+.DS_Store
+.claude/

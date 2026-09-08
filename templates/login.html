@@ -1,10 +1,10 @@
-{% extends "layout.html" %} 
-{% block title %} Log In {% endblock %} 
+{% extends "layout.html" %}
+{% block title %} Log In {% endblock %}
 
 {% block main %}
 <div class="container d-flex align-items-center justify-content-center" style="min-height: 50vh;">
     <div class="card shadow-lg p-4" style="width: 100%; max-width: 400px; border-radius: 15px; border-top: 6px solid var(--mahogany); background-color: #fff;">
-        
+
         <div class="text-center mb-4">
             <h3 class="fw-bold" style="color: var(--mahogany);">Welcome Back</h3>
             <p class="text-muted small">Manage your personal collection</p>
@@ -18,28 +18,12 @@
 
         <form action="/login" method="post">
             <div class="form-floating mb-3">
-                <input 
-                    type="text" 
-                    name="username" 
-                    class="form-control" 
-                    id="uInput" 
-                    placeholder="Username" 
-                    autocomplete="off" 
-                    autofocus 
-                    required
-                >
+                <input type="text" name="username" class="form-control" id="uInput" placeholder="Username" autocomplete="username" autofocus required>
                 <label for="uInput">Username</label>
             </div>
 
             <div class="form-floating mb-4">
-                <input 
-                    type="password" 
-                    name="password" 
-                    class="form-control" 
-                    id="pInput" 
-                    placeholder="Password" 
-                    required
-                >
+                <input type="password" name="password" class="form-control" id="pInput" placeholder="Password" autocomplete="current-password" required>
                 <label for="pInput">Password</label>
             </div>
 
@@ -47,18 +31,14 @@
                 <button class="btn btn-primary py-2 fw-bold" type="submit">
                     Sign In
                 </button>
-                
+
                 <div class="position-relative my-2">
                     <hr>
                     <span class="position-absolute top-50 start-50 translate-middle px-2 bg-white text-muted small">OR</span>
                 </div>
 
-                <button 
-                    name="demo_login" 
-                    value="true" 
-                    class="btn btn-outline-info py-2 fw-bold" 
-                    type="submit"
-                >
+                {# formnovalidate: the guest button must not be blocked by the required fields above #}
+                <button name="demo_login" value="true" class="btn btn-outline-info py-2 fw-bold" type="submit" formnovalidate>
                     Explore as Guest
                 </button>
             </div>

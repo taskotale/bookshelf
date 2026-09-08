@@ -1,10 +1,13 @@
-CREATE TABLE users (
+-- Bookshelf 1.0 schema. Applied automatically on first run when bookshelf.db does not exist.
+
+CREATE TABLE IF NOT EXISTS users (
     id INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL,
     username TEXT NOT NULL,
     hash TEXT NOT NULL,
+    email VARCHAR
 );
 
-CREATE TABLE bookshelves (
+CREATE TABLE IF NOT EXISTS bookshelves (
     id INTEGER NOT NULL,
     width INTEGER NOT NULL,
     height INTEGER NOT NULL,
@@ -15,7 +18,7 @@ CREATE TABLE bookshelves (
     FOREIGN KEY (user_id) REFERENCES users(id)
 );
 
-CREATE TABLE books (
+CREATE TABLE IF NOT EXISTS books (
     id INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL,
     title TEXT NOT NULL,
     author TEXT NOT NULL,
@@ -28,9 +31,7 @@ CREATE TABLE books (
     date TIMESTAMP DEFAULT CURRENT_TIMESTAMP NOT NULL,
     bookshelf_id INTEGER,
     user_id INTEGER,
+    borrowed TEXT,
     FOREIGN KEY(bookshelf_id) REFERENCES bookshelves(id),
     FOREIGN KEY(user_id) REFERENCES users(id)
 );
-
-ALTER TABLE books ADD borrowed TEXT;
-ALTER TABLE users ADD email VARCHAR;

@@ -1,23 +1,27 @@
-{% extends "index.html" %} 
+{% extends "index.html" %}
 
 {% block book_details %}
+{% set languages = [('EN', 'English'), ('HR', 'Croatian'), ('SR', 'Serbian'), ('ME', 'Montenegrin'), ('BS', 'Bosnian'),
+                    ('DE', 'German'), ('FR', 'French'), ('ES', 'Spanish'), ('IT', 'Italian'), ('DA', 'Danish')] %}
+{% set known_codes = languages|map(attribute=0)|list %}
 <div class="modal fade" id="exampleModal" tabindex="-1" aria-hidden="true" data-bs-backdrop="static">
     <div class="modal-dialog modal-lg modal-dialog-centered">
         <div class="modal-content border-0 shadow-lg" style="border-radius: 15px; overflow: hidden;">
-            
+
             <div class="modal-header border-0 pb-0 px-4 pt-4">
                 <h4 class="modal-title fw-bold" style="color: var(--mahogany);">Book Details</h4>
-                <a href="javascript:window.history.back()" class="btn-close" aria-label="Close"></a>
+                <a href="{{ url_for('index', page=page_num) }}" class="btn-close" aria-label="Close"></a>
             </div>
 
             <form action="/book_details" id="modal-form" method="post">
                 <input name="book_id" value="{{ book_details['id'] }}" type="hidden" />
-                
+                <input name="page" value="{{ page_num }}" type="hidden" />
+
                 <div class="modal-body px-4">
                     <div class="row g-4">
                         <div class="col-md-5 text-center">
-                            <div class="shelf-frame rounded shadow-sm mb-3" style="height: 350px; background: #eee;">
-                                <img src="{{ book_details['image'] }}" class="img-fluid rounded" style="max-height: 100%; object-fit: contain;" alt="Cover">
+                            <div class="shelf-frame rounded shadow-sm mb-3 d-flex align-items-center justify-content-center" style="height: 350px; background: #eee;">
+                                <img src="{{ book_details['image']|image_url }}" class="img-fluid rounded" style="max-height: 100%; object-fit: contain;" alt="Cover of {{ book_details['title'] }}">
                             </div>
                             <div class="d-flex justify-content-around p-2 bg-light rounded">
                                 <div class="text-center">
@@ -35,60 +39,64 @@
                             <ul class="list-group list-group-flush">
                                 <li class="list-group-item px-0">
                                     <label class="small text-muted fw-bold">Title</label>
-                                    <div class="edit-trigger" data-input="title_input">
+                                    <div class="edit-trigger" data-input="title_input" title="Click to edit">
                                         <span class="d-block py-1">{{ book_details['title'] }}</span>
-                                        <input name="title" id="title_input" class="form-control form-control-sm mt-1 shadow-none" style="display: none" value="{{ book_details['title'] }}">
+                                        <input name="title" id="title_input" class="form-control form-control-sm mt-1 shadow-none" style="display: none" value="{{ book_details['title'] }}" maxlength="200">
                                     </div>
                                 </li>
                                 <li class="list-group-item px-0">
                                     <label class="small text-muted fw-bold">Author</label>
-                                    <div class="edit-trigger" data-input="author-input">
+                                    <div class="edit-trigger" data-input="author-input" title="Click to edit">
                                         <span class="d-block py-1">{{ book_details['author'] }}</span>
-                                        <input name="author" id="author-input" class="form-control form-control-sm mt-1 shadow-none" style="display: none" value="{{ book_details['author'] }}">
+                                        <input name="author" id="author-input" class="form-control form-control-sm mt-1 shadow-none" style="display: none" value="{{ book_details['author'] }}" maxlength="200">
                                     </div>
                                 </li>
                                 <li class="list-group-item px-0">
                                     <label class="small text-muted fw-bold">Language</label>
-                                    <select id="language" name="language" class="form-select form-select-sm mt-1" data-default="{{ book_details['language'] }}">
-                                        <option value="EN">English</option>
-                                        <option value="HR">Croatian / Montenegrin</option>
-                                        </select>
+                                    <select id="language" name="language" class="form-select form-select-sm mt-1">
+                                        {% for code, name in languages %}
+                                        <option value="{{ code }}" {% if book_details['language'] == code %}selected{% endif %}>{{ name }}</option>
+                                        {% endfor %}
+                                        {% if book_details['language'] not in known_codes %}
+                                        <option value="{{ book_details['language'] }}" selected>{{ book_details['language'] }}</option>
+                                        {% endif %}
+                                    </select>
                                 </li>
                                 <li class="list-group-item px-0">
-                                    <label class="small text-muted fw-bold">Location & Shelf</label>
-                                    <div id="current-shelf" class="edit-trigger" data-input="location-input" data-default="{{book_details['bookshelf_id']}}">
-                                        {% if book_details['bookshelf_id'] == None %}
-                                            <span class="d-block text-muted small">Not on shelf</span>
+                                    <label class="small text-muted fw-bold">Location &amp; Shelf</label>
+                                    <div id="current-shelf" class="edit-trigger" data-input="location-input" title="Click to change">
+                                        {% if book_details['bookshelf_id'] == None or not shelf %}
+                                            <span class="d-block text-muted small">Not on a shelf. Click to place it.</span>
                                         {% else %}
-                                            <span class="d-block">{{shelf[0]['description']}} (↑: {{ book_details['location_y'] }}, →: {{ book_details['location_x'] }})</span>
+                                            <span class="d-block">{{ shelf[0]['description'] }} (shelf {{ book_details['location_y'] }}, position {{ book_details['location_x'] }})</span>
                                         {% endif %}
                                     </div>
-                                    
+
                                     <select class="form-select form-select-sm mt-2" name="location-input" id="location-input" style="display: none">
-                                        <option value="None">Not on shelf</option>
-                                        {% for shelf in bookshelves %}
-                                            <option value="{{shelf['id']}}" data-height="{{shelf['height']}}" data-width="{{shelf['width']}}">{{shelf['description']}}</option>
+                                        <option value="None" {% if not book_details['bookshelf_id'] %}selected{% endif %}>Not on shelf</option>
+                                        {% for s in bookshelves %}
+                                            <option value="{{ s['id'] }}" data-height="{{ s['height'] }}" data-width="{{ s['width'] }}" {% if s['id'] == book_details['bookshelf_id'] %}selected{% endif %}>{{ s['description'] }}</option>
                                         {% endfor %}
                                     </select>
-                                    
+
                                     <div id="hi-wi" class="mt-2 p-2 bg-light rounded" style="display: none">
                                         <div class="row g-2">
                                             <div class="col-6">
-                                                <label class="tiny-label">Shelf #</label>
-                                                <input name="selected-max-height" id="selected-max-height" class="form-control form-control-sm" type="number">
+                                                <label class="tiny-label">Shelf # (from the bottom)</label>
+                                                <input name="selected-max-height" id="selected-max-height" class="form-control form-control-sm" type="number" min="1" value="{{ book_details['location_y'] or '' }}">
                                             </div>
                                             <div class="col-6">
-                                                <label class="tiny-label">Position #</label>
-                                                <input name="selected-max-width" id="selected-max-width" class="form-control form-control-sm" type="number">
+                                                <label class="tiny-label">Position # (from the left)</label>
+                                                <input name="selected-max-width" id="selected-max-width" class="form-control form-control-sm" type="number" min="1" value="{{ book_details['location_x'] or '' }}">
                                             </div>
                                         </div>
                                     </div>
                                 </li>
                                 <li class="list-group-item px-0">
                                     <label class="small text-muted fw-bold">Private Notes</label>
-                                    <div class="edit-trigger" data-input="note-input">
+                                    <div class="edit-trigger" data-input="note-input" title="Click to edit">
                                         <span class="d-block small py-1">{{ book_details['note'] if book_details['note'] else 'Click to add a note...' }}</span>
-                                        <textarea id="note-input" name="note" class="form-control form-control-sm mt-1" style="display: none">{{ book_details['note'] }}</textarea>
+                                        <textarea id="note-input" name="note" class="form-control form-control-sm mt-1" style="display: none" maxlength="2000">{{ book_details['note'] }}</textarea>
                                     </div>
                                 </li>
                             </ul>
@@ -97,9 +105,9 @@
                 </div>
 
                 <div class="modal-footer border-0 p-4">
-                    <button id="delete-btn" name="submit" class="btn btn-outline-danger btn-sm" value="delete">Delete Book</button>
+                    <button id="delete-btn" name="submit" class="btn btn-outline-danger btn-sm" value="delete" type="submit">Delete Book</button>
                     <div class="ms-auto">
-                        <a href="javascript:window.history.back()" class="btn btn-secondary btn-sm px-4">Close</a>
+                        <a href="{{ url_for('index', page=page_num) }}" class="btn btn-secondary btn-sm px-4">Close</a>
                         <button id="edit-book" name="submit" value="edit" type="submit" class="btn btn-primary btn-sm px-4">Save Changes</button>
                     </div>
                 </div>
@@ -116,38 +124,52 @@
 {% endblock %}
 
 {% block script %}
-<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
 <script>
-    $(document).ready(function () {
-        $('#exampleModal').modal('show');
+    document.addEventListener('DOMContentLoaded', function () {
+        const modal = new bootstrap.Modal(document.getElementById('exampleModal'));
+        modal.show();
 
-        // Toggle Edit Inputs
-        $('.edit-trigger').click(function() {
-            const inputId = $(this).data('input');
-            $(this).find('span').hide();
-            $('#' + inputId).fadeIn().focus();
+        // click a value to edit it
+        document.querySelectorAll('.edit-trigger').forEach(function (trigger) {
+            trigger.addEventListener('click', function () {
+                const input = document.getElementById(trigger.dataset.input);
+                trigger.querySelectorAll('span').forEach(function (s) { s.style.display = 'none'; });
+                input.style.display = 'block';
+                input.focus();
+                if (input.id === 'location-input') {
+                    showPositionInputs();
+                }
+            });
         });
 
-        // Delete Confirmation
-        $('#delete-btn').click(e => confirm('Are you sure you want to remove this book?'));
-
-        // Handle Shelf Logic
-        const lang = $('#language').attr('data-default').toUpperCase();
-        $('#language').val(lang);
-
-        const defaultShelf = $('#current-shelf').attr('data-default');
-        $('#location-input').val(defaultShelf);
-
-        $('#location-input').on('change', function () {
-            const maxHeight = $(this).find('option:selected').data('height');
-            const maxWidth = $(this).find('option:selected').data('width');
-            if (maxHeight) {
-                $('#hi-wi').fadeIn();
-                $('#selected-max-height').attr('max', maxHeight).val(1);
-                $('#selected-max-width').attr('max', maxWidth).val(1);
-            } else {
-                $('#hi-wi').hide();
+        document.getElementById('delete-btn').addEventListener('click', function (e) {
+            if (!confirm('Are you sure you want to remove this book?')) {
+                e.preventDefault();
             }
+        });
+
+        const shelfSelect = document.getElementById('location-input');
+        const positionBox = document.getElementById('hi-wi');
+        const heightInput = document.getElementById('selected-max-height');
+        const widthInput = document.getElementById('selected-max-width');
+
+        function showPositionInputs() {
+            const option = shelfSelect.options[shelfSelect.selectedIndex];
+            if (option && option.dataset.height) {
+                positionBox.style.display = 'block';
+                heightInput.max = option.dataset.height;
+                widthInput.max = option.dataset.width;
+                if (!heightInput.value) heightInput.value = 1;
+                if (!widthInput.value) widthInput.value = 1;
+            } else {
+                positionBox.style.display = 'none';
+            }
+        }
+
+        shelfSelect.addEventListener('change', function () {
+            heightInput.value = 1;
+            widthInput.value = 1;
+            showPositionInputs();
         });
     });
 </script>

@@ -9,15 +9,19 @@
         </div>
 
         <div class="card-body p-4 bg-white">
+            {% if message %}
+            <div class="alert alert-warning py-2 small text-center" role="alert">{{ message }}</div>
+            {% endif %}
+
             {% if book %}
             <div class="row g-4 align-items-center">
-                <div class="col-md-5">
-                    <img class="img-fluid rounded shadow-sm" src="data:image/jpg;base64,{{cover}}" alt="Cover Preview" style="max-height: 300px;">
+                <div class="col-md-5 text-center">
+                    <img class="img-fluid rounded shadow-sm" src="data:image/jpeg;base64,{{ cover }}" alt="Cover preview" style="max-height: 300px;">
                 </div>
                 <div class="col-md-7 text-start">
-                    <h5 class="fw-bold mb-1">{{book['title']}}</h5>
-                    <p class="text-muted small mb-3">By {% for key in book['author']%} {{key}} {%endfor%}</p>
-                    
+                    <h5 class="fw-bold mb-1">{{ book['title'] }}</h5>
+                    <p class="text-muted small mb-3">By {% for key in book['author'] %}{{ key }}{% endfor %}</p>
+
                     <form action="/add_book_confirm" method="post">
                         <div class="form-check form-switch mb-4">
                             <input class="form-check-input" type="checkbox" name="status" value="True" id="readCheck">
@@ -25,15 +29,15 @@
                         </div>
 
                         <label class="form-label fw-bold small">Assign to a Bookshelf</label>
-                        <select class="form-select mb-4 shadow-none" name="bookshelf_choice" required>
+                        <select class="form-select mb-4 shadow-none" name="bookshelf_choice">
                             <option value="None" selected>Not on a shelf yet</option>
-                            {% for shelf in bookshelves%}
-                            <option value="{{shelf['id']}}">{{shelf['description']}}</option>
-                            {%endfor%}
+                            {% for shelf in bookshelves %}
+                            <option value="{{ shelf['id'] }}">{{ shelf['description'] }}</option>
+                            {% endfor %}
                         </select>
 
                         <div class="d-flex gap-2">
-                            <a href="javascript:window.history.back()" class="btn btn-outline-secondary flex-grow-1">Back</a>
+                            <a href="/add_book" class="btn btn-outline-secondary flex-grow-1">Back</a>
                             <button class="btn btn-primary flex-grow-1 fw-bold" name="confirm" value="first" type="submit">Next Step</button>
                         </div>
                     </form>
@@ -43,24 +47,24 @@
             {% else %}
             <div class="text-center">
                 <h5 class="fw-bold mb-3" style="color: var(--mahogany);">Placement for: {{ selected['description'] }}</h5>
-                <div class="shelf-frame mb-4 mx-auto rounded" style="max-width: 300px; height: 200px; background-color: #eee;">
-                    <img src="{{ selected['image'] }}" class="img-fluid rounded" style="max-height: 100%; object-fit: cover;">
+                <div class="shelf-frame mb-4 mx-auto rounded d-flex align-items-center justify-content-center" style="max-width: 300px; height: 200px; background-color: #eee; overflow: hidden;">
+                    <img src="{{ selected['image']|image_url }}" class="img-fluid rounded" style="max-height: 100%; object-fit: cover;" alt="{{ selected['description'] }}">
                 </div>
 
                 <form action="/add_book_confirm" method="post">
                     <div class="row g-3 justify-content-center mb-4 text-start">
                         <div class="col-sm-6">
-                            <label class="form-label small fw-bold">Shelf Level (↑ 1 to {{selected['height']}})</label>
-                            <input name="height" min="1" max="{{selected['height']}}" class="form-control" type="number" value="1" required>
+                            <label class="form-label small fw-bold">Shelf level (1 to {{ selected['height'] }}, from the bottom)</label>
+                            <input name="height" min="1" max="{{ selected['height'] }}" class="form-control" type="number" value="1" required>
                         </div>
                         <div class="col-sm-6">
-                            <label class="form-label small fw-bold">Position (→ 1 to {{selected['width']}})</label>
-                            <input name="width" min="1" max="{{selected['width']}}" class="form-control" type="number" value="1" required>
+                            <label class="form-label small fw-bold">Position (1 to {{ selected['width'] }}, from the left)</label>
+                            <input name="width" min="1" max="{{ selected['width'] }}" class="form-control" type="number" value="1" required>
                         </div>
                     </div>
 
                     <div class="d-flex gap-2">
-                        <a href="javascript:window.history.back()" class="btn btn-outline-secondary flex-grow-1">Back</a>
+                        <a href="/add_book_confirm" class="btn btn-outline-secondary flex-grow-1">Back</a>
                         <button class="btn btn-primary flex-grow-1 fw-bold" name="confirm" value="location" type="submit">Place on Shelf</button>
                     </div>
                 </form>
